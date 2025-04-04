@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: HackerNews
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
-  ACR_REGISTRY: hackernews1si22is404.azurecr.io
+  ACR_REGISTRY: hackernews1si21is055.azurecr.io
   ACR_REPOSITORY_NAME: hackernews
   CONTAINER_APP_NAME: hackernews
   TARGET_PORT: 3000
@@ -27,7 +27,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.GITHUBACTIONS1SI22IS404 }}
+          creds: ${{ secrets.AZURE_GITHUB_ACTIONS}}
 
       # INFRA ENSURE BLOCKS
       - name: Check Resource Group exists
@@ -150,6 +150,6 @@ jobs:
             --registry-username "${{ env.ACR_USERNAME }}" \
             --registry-password "${{ env.ACR_PASSWORD }}" \
             --env-vars \
-                SECRET_KEY=${{ secrets.SECRET_KEY }} \
+                SECRET_KEY=${{ secrets.JWT_SECRET_KEY}} \
                 DATABASE_URL=${{ secrets.DATABASE_URL }} \
                 DIRECT_URL=${{ secrets.DIRECT_URL }}
