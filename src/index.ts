@@ -30,7 +30,10 @@
 // }, (info) => {
 //   console.log(`Server is running on http://localhost:${info.port}`)
 // })
-import "dotenv/config";
+//import "dotenv/config";
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 import { allRoutes } from "./routes/routes";
 import { serve } from "@hono/node-server";
 
