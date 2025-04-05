@@ -10,7 +10,7 @@ env:
   RESOURCE_GROUP: HackerNews
   CONTAINER_APPS_ENVIRONMENT: HackerNewsContainerAppsEnvironment
   LOG_ANALYTICS_WORKSPACE: HackerNewsLogAnalyticsWorkspace
-  ACR_REGISTRY: hackernews1si21is055.azurecr.io
+  ACR_REGISTRY: hackernews1si21is046.azurecr.io # This has to be unique (at least the `erbium` bit)
   ACR_REPOSITORY_NAME: hackernews
   CONTAINER_APP_NAME: hackernews
   TARGET_PORT: 3000
@@ -27,7 +27,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_GITHUB_ACTIONS}}
+          creds: ${{ secrets.AZURE_GITHUB_ACTIONS }}
 
       # INFRA ENSURE BLOCKS
       - name: Check Resource Group exists
@@ -136,7 +136,7 @@ jobs:
           tags: ${{ env.ACR_REGISTRY }}/${{ env.ACR_REPOSITORY_NAME }}:${{ github.ref_name }}
 
       # CONTAINER APP DEPLOY
-      - name: Create/update Container App
+      - name: Crate/update Container App
         run: |
           az containerapp up \
             --name "${{ env.CONTAINER_APP_NAME }}" \
@@ -149,7 +149,10 @@ jobs:
             --registry-server "${{ env.ACR_REGISTRY }}" \
             --registry-username "${{ env.ACR_USERNAME }}" \
             --registry-password "${{ env.ACR_PASSWORD }}" \
-            --env-vars \
-                SECRET_KEY=${{ secrets.JWT_SECRET_KEY}} \
-                DATABASE_URL=${{ secrets.DATABASE_URL }} \
-                DIRECT_URL=${{ secrets.DIRECT_URL }}
+
+      - name: Set environment variables for Container App
+        run: |
+              az containerapp update \
+                --name "${{ env.CONTAINER_APP_NAME }}" \
+                --resource-group "${{ env.RESOURCE_GROUP }}" \
+                --set-env-vars JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} DATABASE_URL=${{ secrets.DATABASE_URL }} DIRECT_URL=${{secrets.DIRECT_URL}}
