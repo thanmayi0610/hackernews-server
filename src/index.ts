@@ -33,6 +33,7 @@
 //import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { allRoutes } from "./routes/routes";
+//import { swaggerUI } from '@hono/swagger-ui';
 
 
 allRoutes.get("/info", (context) => {
@@ -40,6 +41,8 @@ allRoutes.get("/info", (context) => {
     message: "Hello World",
   });
 });
+
+
 
 
 serve(allRoutes, (info) => {
