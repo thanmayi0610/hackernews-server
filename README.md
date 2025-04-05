@@ -111,4 +111,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE.txt
 
 ---
 
-🌐 "Because every great discussion starts with a rock-solid backend—engineered for the front page!"
+
