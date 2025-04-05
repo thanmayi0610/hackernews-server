@@ -6,6 +6,7 @@ import { likesRoutes } from "./likes-routes";
 import { commentsRoutes } from "./comments-routes";
 
 import { logger } from "hono/logger";
+import { swaggerRoutes } from "./swagger-routes";
 
 export const allRoutes = new Hono();
 
@@ -17,6 +18,7 @@ allRoutes.route("/posts", postsRoutes);
 allRoutes.route("/likes", likesRoutes);
 //allRoutes.route("/comments", commentsRoutes);
 allRoutes.route("/comments", commentsRoutes);
+allRoutes.route("/ui", swaggerRoutes);
 allRoutes.get("/health", (context) => {
   return context.json(
     {
