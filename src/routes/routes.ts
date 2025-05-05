@@ -7,6 +7,7 @@ import { likesRoutes } from "./likes-routes";
 import { commentsRoutes } from "./comments-routes";
 import { cors } from "hono/cors";
 import { authRoute } from "./middlewares/session-middleware";
+import { webClientUrl } from "../../environment";
 
 
 //import { swaggerRoutes } from "./swagger-routes";
@@ -14,12 +15,15 @@ import { authRoute } from "./middlewares/session-middleware";
 export const allRoutes = new Hono();
 
 allRoutes.use(
+  "*",
   cors({
-      origin: "http://localhost:4000", // Allow only the frontend URL
-      allowHeaders: ["Content-Type", "Authorization"],
-      allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      credentials: true,
-  })
+    origin: webClientUrl, // ✅ Only allow your frontend
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  })
 );
 
 allRoutes.route("/api/auth", authRoute)
