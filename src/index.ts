@@ -31,20 +31,34 @@
 //   console.log(`Server is running on http://localhost:${info.port}`)
 // })
 //import "dotenv/config";
+
+
+
+
+// import { serve } from "@hono/node-server";
+// import { allRoutes } from "./routes/routes";
+// //import { swaggerUI } from '@hono/swagger-ui';
+
+
+// allRoutes.get("/info", (context) => {
+//   return context.json({
+//     message: "Hello World",
+//   });
+// });
+
+
+
+
+// serve(allRoutes, (info) => {
+//   console.log(`Server is running @ http://localhost:${info.port}`);
+// });
+
 import { serve } from "@hono/node-server";
+import { Hono } from "hono";
 import { allRoutes } from "./routes/routes";
-//import { swaggerUI } from '@hono/swagger-ui';
+const app = new Hono();
 
-
-allRoutes.get("/info", (context) => {
-  return context.json({
-    message: "Hello World",
-  });
-});
-
-
-
-
-serve(allRoutes, (info) => {
-  console.log(`Server is running @ http://localhost:${info.port}`);
+// app.route("/", apiRoutes);
+serve(allRoutes, ({ port }) => {
+    console.log(`:rocket: Server is running on http://localhost:${port}`);
 });

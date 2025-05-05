@@ -6,8 +6,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
-
+ 
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -17,25 +18,33 @@ datasource db {
 model User {
   id       String  @id @default(uuid())
   username String  @unique
-  password String
+  displayUsername String
   name     String?
 
   posts    Post[]
   likes    Like[]
   comments Comment[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  email         String @unique
+  emailVerified Boolean
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
+
+  
 }
 
 model Post {
   id       String @id @default(uuid())
   title    String
   content  String
+  url      String?
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
 
-  likes    Like[]
+  likes    Like[] 
   comments Comment[]
 
   createdAt DateTime @default(now())
@@ -44,22 +53,23 @@ model Post {
 
 model Like {
   id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   post   Post   @relation(fields: [postId], references: [id])
   postId String
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, postId]) // Ensures one like per user per post
+  // Ensures one like per user per post
+  @@unique([userId, postId])
 }
 
 model Comment {
   id     String @id @default(uuid())
   text   String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId String
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id],onDelete: Cascade)
   postId String
 
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
@@ -68,4 +78,44 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 }

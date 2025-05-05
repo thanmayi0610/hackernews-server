@@ -1,12 +1,35 @@
-// routes/swagger-routes.ts
-
 import { Hono } from "hono";
-import { swaggerUI } from "@hono/swagger-ui";
-import { openapi } from "./middlewares/openapi"; 
 
-export const swaggerRoutes = new Hono();
+export const swaggerDocument = new Hono();
 
-swaggerRoutes.get("/", swaggerUI({ url: "/ui/swagger.json" }));
-
-// ✅ Raw OpenAPI JSON served at /ui/swagger.json
-swaggerRoutes.get("/swagger.json", (c) => c.json(openapi));
+swaggerDocument.get("/docs", (c) => {
+  return c.json({
+    openapi: "3.0.0",
+  info: {
+    title: "HackerNews API",
+    version: "2.0.3",
+    description: "HackerNews clone server",
+    contact: {
+      name: "HackerNews-Server",
+      url: "https://github.com/Mahesh5726/hackernews-server",
+    },
+  },
+  servers: [
+    {
+      url: "http://localhost:3000",
+      description: "Development server",
+    },
+    {
+      url: "https://hackernews.lemonisland-20d31e0a.centralindia.azurecontainerapps.io/",
+      description: "Production server",
+    },
+  ],
+  tags: [
+    { name: "Authentication", description: "Authentication endpoints" },
+    { name: "Users", description: "User management endpoints" },
+    { name: "Posts", description: "Post management endpoints" },
+    { name: "Likes", description: "Like management endpoints" },
+    { name: "Comments", description: "Comment management endpoints" },
+  ],
+  });
+});
