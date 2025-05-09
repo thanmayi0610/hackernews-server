@@ -1,42 +1,40 @@
-import type { User } from "@prisma/client";
-
 export type GetMeResult = {
-  user: User;
+  user: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+  };
 };
 
 export enum GetMeError {
-  BAD_REQUEST,
+  USER_NOT_FOUND = "USER_NOT_FOUND",
+  UNKNOWN = "UNKNOWN",
 }
 
-// export interface UserResponse {
-//   id: string;
-//   username: string;
-//   name: string | null;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
-
-// export interface GetAllUsersResult {
-//   users: UserResponse[];
-//   totalUsers: number;
-//   totalPages: number;
-//   currentPage: number;
-// }
-export type UserResponse = {
-  id: string;
-  username: string;
-  name: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 export type GetAllUsersResult = {
-  users: UserResponse[];
-  totalUsers: number;
-  totalPages: number;
-  currentPage: number;
+  users: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+  }[];
 };
 
-export enum UsersError {
-  BAD_REQUEST,
+export enum GetAllUsersError {
+  NO_USERS_FOUND = "NO_USERS_FOUND",
+  UNKNOWN = "UNKNOWN",
+}
+
+export enum GetUserByIdError {
+  USER_NOT_FOUND = "USER_NOT_FOUND",
+  UNKNOWN = "UNKNOWN",
 }

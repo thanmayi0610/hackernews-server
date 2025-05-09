@@ -1,5 +1,7 @@
 // src/controllers/likes/like-types.ts
-import type { Like, User } from "@prisma/client";
+
+import type { Like } from "../../generated/prisma";
+
 
 export interface CreateLikeResult {
   like: Like;

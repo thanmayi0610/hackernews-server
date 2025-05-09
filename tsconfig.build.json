@@ -4,12 +4,12 @@
     "noEmit": false,
     "module": "CommonJS",
     "target": "ES2020",
-    "outDir": "dist",
+    "outDir":  "./dist",
     "moduleResolution": "node",
     "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "include": ["src","src/generated/prisma"]
 }

@@ -1,41 +1,146 @@
-import { prismaClient } from "../../extras/prisma";
-import { GetMeError, type GetAllUsersResult, type GetMeResult } from "./users-types";
+import { getPagination } from "../../extras/pagination";
+import { prismaClient } from "../../integrations/prisma";
 
-export const getMe = async (parameters: { userId: string }): Promise<GetMeResult> => {
-  const user = await prismaClient.user.findUnique({
-    where: {
-      id: parameters.userId,
-    },
-  });
+import {
+  GetAllUsersError,
+  GetMeError,
 
-  if (!user) {
-    throw GetMeError.BAD_REQUEST;
+  type GetAllUsersResult,
+  type GetMeResult,
+} from "./users-types";
+
+export const GetMe = async (parameters: {
+  userId: string;
+}): Promise<GetMeResult> => {
+  try {
+    const user = await prismaClient.user.findUnique({
+      where: { id: parameters.userId },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+        posts: {
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            // content: true,
+            createdAt: true,
+            postId: true,
+          },
+        },
+        likes: {
+          select: {
+            id: true,
+            createdAt: true,
+            postId: true,
+          },
+        },
+      },
+    });
+
+
+    if (!user) {
+      throw GetMeError.USER_NOT_FOUND;
+    }
+
+    return { user };
+  } catch (e) {
+    console.error(e);
+    throw GetMeError.UNKNOWN;
   }
+};
 
-  return {
-    user,
-  };
+export const GetUsers = async (parameter: {
+  page: number;
+  limit: number;
+}): Promise<GetAllUsersResult> => {
+  try {
+    const { skip, take } = getPagination(parameter.page, parameter.limit);
+
+    const users = await prismaClient.user.findMany({
+      orderBy: { name: "asc" },
+      skip,
+      take,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+      },
+    });
+
+    if (!users || users.length === 0) {
+      throw GetAllUsersError.NO_USERS_FOUND;
+    }
+
+    return { users };
+  } catch (e) {
+    console.error(e);
+    throw GetAllUsersError.UNKNOWN;
+  }
 };
 
 
-// import { prismaClient } from "../prismaClient"; // Ensure this is correctly imported
-// import { GetAllUsersResult } from "./user-types";
 
-export const getAllUsers = async (page: number = 1, limit: number = 10): Promise<GetAllUsersResult> => {
-  const skip = (page - 1) * limit;
+interface GetUserByIdProps {
+  userId: string;
+}
 
-  const users = await prismaClient.user.findMany({
-    orderBy: { username: "asc" }, // Sort alphabetically
-    skip,
-    take: limit,
-  });
+export const SearchUsers = async (parameters: {
+  query: string;
+  page: number;
+  limit: number;
+}): Promise<GetAllUsersResult> => {
+  try {
+    const { query, page, limit } = parameters;
+    const { skip, take } = getPagination(page, limit);
 
-  const totalUsers = await prismaClient.user.count(); // Get total number of users
+    const users = await prismaClient.user.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { username: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      orderBy: { name: "asc" },
+      skip,
+      take,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+      },
+    });
 
-  return {
-    users,
-    totalUsers,
-    totalPages: Math.ceil(totalUsers / limit),
-    currentPage: page,
-  };
+    if (!users || users.length === 0) {
+      throw GetAllUsersError.NO_USERS_FOUND;
+    }
+
+    return { users };
+  } catch (e) {
+    console.error(e);
+    throw GetAllUsersError.UNKNOWN;
+  }
 };

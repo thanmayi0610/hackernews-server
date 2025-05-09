@@ -1,5 +1,5 @@
 // src/controllers/likes/like-controller.ts
-import { prismaClient } from "../../extras/prisma";
+import { prismaClient } from "../../integrations/prisma";
 import { 
   type CreateLikeResult, 
   CreateLikeError,

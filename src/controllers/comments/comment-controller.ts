@@ -1,5 +1,5 @@
 // src/controllers/comments/comment-controller.ts
-import { prismaClient } from "../../extras/prisma";
+import { prismaClient } from "../../integrations/prisma";
 import { 
   type CreateCommentParameters, 
   type CreateCommentResult, 

@@ -1,5 +1,7 @@
 // src/controllers/comments/comment-types.ts
-import type { Comment, User } from "@prisma/client";
+
+import type { Comment } from "../../generated/prisma";
+
 
 export type CreateCommentParameters = {
   text: string;

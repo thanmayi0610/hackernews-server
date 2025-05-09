@@ -2,11 +2,15 @@ FROM node:22.1.0
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY src ./src
 
+
+COPY . .
 RUN npm install
 
-RUN if [ -f "./prisma/schema.prisma" ]; then npx prisma generate; fi
+RUN if [ -f "./prisma/schema.prisma" ]; then npx prisma generate; else echo "Skipping prisma generate"; fi
 
 RUN npm run build
 

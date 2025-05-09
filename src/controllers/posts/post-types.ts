@@ -1,5 +1,7 @@
 // src/controllers/posts/post-types.ts
-import type { Post, User } from "@prisma/client";
+
+import type { Post } from "../../generated/prisma";
+
 
 export type CreatePostParameters = {
   title: string;

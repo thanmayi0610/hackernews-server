@@ -1,5 +1,5 @@
 // src/controllers/posts/post-controller.ts
-import { prismaClient } from "../../extras/prisma";
+import { prismaClient } from "../../integrations/prisma";
 import { 
   type CreatePostParameters, //getting error in this line
   type CreatePostResult, //getting error in this line
